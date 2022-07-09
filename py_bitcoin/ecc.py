@@ -72,6 +72,16 @@ class Point:
             raise ValueError(f'({x}, {y}) is not on the curve')
 
 
+    def __repr__(self):
+        if self.x is None:
+            return 'Point(infinity)'
+        elif isinstance(self.x, FieldElement):
+            return 'Point({},{})_{}_{} FieldElement({})'.format(
+                self.x.num, self.y.num, self.a.num, self.b.num, self.x.prime
+            )
+        return f'Point({self.x}, {self.y})_{self.a}_{self.b}'
+
+
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y \
             and self.a == other.a and self.b == other.b
@@ -111,4 +121,6 @@ class Point:
             x = s**2 - 2 * self.x
             y = s * (self.x - x) - self.y
             return self.__class__(x, y, self.a, self.b)
+
+
 
