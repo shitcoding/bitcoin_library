@@ -88,3 +88,16 @@ class Point:
             return other
         if other.x is None: # other is the point at infinity
             return self
+
+        # Additive inverse case (same x, different y), vertical line:
+        # returns point at infinity.
+        if self.x == other.x and self.y != other.y:
+            return self.__class__(None, None, self.a, self.b)
+
+        # x1 != x2 case
+        if self.x != other.x:
+            s = (other.y - self.y) / (other.x - self.x)
+            x3 = s**2 - self.x - other.x
+            y3 = s * (self.x - x3) - self.y
+            return self.__class__(x3, y3, self.a, self.b)
+
