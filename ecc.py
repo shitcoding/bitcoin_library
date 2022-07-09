@@ -56,3 +56,35 @@ class FieldElement:
         num = (self.num * pow(other.num, self.prime-2, self.prime)) % self.prime
         return self.__class__(num, self.prime)
 
+
+class Point:
+    """Point on the elliptic curve `y**2 = x**3 + a*x +b`."""
+    def __init__(self, x, y, a, b):
+        self.a = a
+        self.b = b
+        self.x = x
+        self.y = y
+        # Point at infinity case
+        if self.x is None and self.y is None:
+            return
+        # Raise exception if point is not on the curve
+        if self.y**2 != self.x**3 + a*x + b:
+            raise ValueError(f'({x}, {y}) is not on the curve')
+
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y \
+            and self.a == other.a and self.b == other.b
+
+    def __ne__(self, other):
+        return not (self == other)
+
+
+    def __add__(self, other):
+        if self.a != other.a or self.b != other.b:
+            raise TypeError(f'Points {self}, {other} are not on the same curve')
+
+        if self.x is None: # self is the point at infinity
+            return other
+        if other.x is None: # other is the point at infinity
+            return self
