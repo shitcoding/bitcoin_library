@@ -50,4 +50,6 @@ def test_points_add():
     p2 = Point(-1, -1, 5, 7)
     assert (p1 + p2 == Point(3, -7, 5, 7))
 
-
+    # Testing addition with p1 == p2 (tangential slope)
+    p = Point(-1, -1, 5, 7)
+    assert (p + p == Point(18, 77, 5, 7))
