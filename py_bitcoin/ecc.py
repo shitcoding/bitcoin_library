@@ -167,7 +167,11 @@ class S256Point(Point):
             super().__init__(x=x, y=y, a=a, b=b)
 
     def __repr__(self):
-        return f'S256{super().__repr__()}'
+        if self.x is None:
+            return 'S256Point(infinity)'
+        else:
+            return 'S256Point({}, {})'.format(self.x, self.y)
+
 
     def __rmul__(self, coefficient):
         # We can mod by n because nG = 0
