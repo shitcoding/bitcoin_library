@@ -1,5 +1,5 @@
 import pytest
-from py_bitcoin.ecc import FieldElement, Point
+from py_bitcoin.ecc import A, B, G, N, FieldElement, Point, S256Field, S256Point
 
 
 def test_finite_field_point_is_on_curve():
@@ -100,3 +100,7 @@ def test_finite_field_point_scalar_mul():
                 FieldElement(x_res, prime), FieldElement(y_res, prime), a, b
             )
         assert multiplier * p == p_res
+
+
+def test_secp256k1_point():
+    assert N*G == S256Point(None, None, A, B)
