@@ -57,6 +57,11 @@ class FieldElement:
         return self.__class__(num, self.prime)
 
 
+    def __rmul__(self, coefficient):
+        num = (self.num * coefficient) % self.prime
+        return self.__class__(num, self.prime)
+
+
 class Point:
     """Point on the elliptic curve `y**2 = x**3 + a*x +b`."""
     def __init__(self, x, y, a, b):
@@ -73,6 +78,7 @@ class Point:
 
 
     def __repr__(self):
+        '''String representation of Point object.'''
         if self.x is None:
             return 'Point(infinity)'
         elif isinstance(self.x, FieldElement):
@@ -91,12 +97,13 @@ class Point:
 
 
     def __add__(self, other):
+        '''Add 2 points on elliptic curve, return resulting Point object.'''
         if self.a != other.a or self.b != other.b:
             raise TypeError(f'Points {self}, {other} are not on the same curve')
 
-        if self.x is None: # self is the point at infinity
+        if self.x is None: # self is the point at infinity, return other
             return other
-        if other.x is None: # other is the point at infinity
+        if other.x is None: # other is the point at infinity, return self
             return self
 
         # Additive inverse case (same x, different y), vertical line:
