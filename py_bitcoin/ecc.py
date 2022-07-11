@@ -8,20 +8,16 @@ class FieldElement:
         self.num = num
         self.prime = prime
 
-
     def __repr__(self):
         return f'FieldElement_{self.prime}({self.num})'
-
 
     def __eq__(self, other):
         if other is None:
             return False
         return self.num == other.num and self.prime == other.prime
 
-
     def __ne__(self, other):
         return not (self == other)
-
 
     def __add__(self, other):
         if self.prime != other.prime:
@@ -29,13 +25,11 @@ class FieldElement:
         num = (self.num + other.num) % self.prime
         return self.__class__(num, self.prime)
 
-
     def __sub__(self, other):
         if self.prime != other.prime:
             raise TypeError('Cannot substract two numbers in different Fields')
         num = (self.num - other.num) % self.prime
         return self.__class__(num, self.prime)
-
 
     def __mul__(self, other):
         if self.prime != other.prime:
@@ -43,19 +37,16 @@ class FieldElement:
         num = (self.num * other.num) % self.prime
         return self.__class__(num, self.prime)
 
-
     def __pow__(self, exponent):
         n = exponent % (self.prime - 1)
         num = pow(self.num, n, self.prime)
         return self.__class__(num, self.prime)
-
 
     def __truediv__(self, other):
         if self.prime != other.prime:
             raise TypeError('Cannot divide two numbers in different Fields')
         num = (self.num * pow(other.num, self.prime-2, self.prime)) % self.prime
         return self.__class__(num, self.prime)
-
 
     def __rmul__(self, coefficient):
         num = (self.num * coefficient) % self.prime
@@ -76,7 +67,6 @@ class Point:
         if self.y**2 != self.x**3 + a*x + b:
             raise ValueError(f'({x}, {y}) is not on the curve')
 
-
     def __repr__(self):
         '''String representation of Point object.'''
         if self.x is None:
@@ -87,7 +77,6 @@ class Point:
             )
         return f'Point({self.x}, {self.y})_{self.a}_{self.b}'
 
-
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y \
             and self.a == other.a and self.b == other.b
@@ -95,15 +84,14 @@ class Point:
     def __ne__(self, other):
         return not (self == other)
 
-
     def __add__(self, other):
         '''Add 2 points on elliptic curve, return resulting Point object.'''
         if self.a != other.a or self.b != other.b:
             raise TypeError(f'Points {self}, {other} are not on the same curve')
 
-        if self.x is None: # self is the point at infinity, return other
+        if self.x is None:  # self is the point at infinity, return other
             return other
-        if other.x is None: # other is the point at infinity, return self
+        if other.x is None:  # other is the point at infinity, return self
             return self
 
         # Additive inverse case (same x, different y), vertical line:
@@ -129,7 +117,6 @@ class Point:
             y = s * (self.x - x) - self.y
             return self.__class__(x, y, self.a, self.b)
 
-
     def __rmul__(self, coefficient):
         """
         Scalar multiplication of the point using binary expansion.
@@ -148,3 +135,45 @@ class Point:
             # bit-shift the coef to the right
             coef >>= 1
         return result
+
+
+# secp256k1 curve parameters.
+A = 0
+B = 7
+P = 2**256 - 2**32 - 977
+GX = 0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+GY = 0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8
+N = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
+
+
+class S256Field(FieldElement):
+    """Field specific to secp256k1 elliptic curve."""
+    def __init__(self, num, prime=None):
+        super().__init__(num=num, prime=P)
+
+    def __repr__(self):
+        return '{:x}'.format(self.num).zfill(64)
+
+
+class S256Point(Point):
+    """A point on secp256k1 elliptic curve."""
+    def __init__(self, x, y, a=None, b=None):
+        a, b = S256Field(A), S256Field(B)
+        if type(x) == int:
+            super().__init__(x=S256Field(x), y=S256Field(y), a=a, b=b)
+        else:
+            # When initializing with the point at infinity
+            # pass x and y directly instead of using S256Field class.
+            super().__init__(x=x, y=y, a=a, b=b)
+
+    def __repr__(self):
+        return f'S256{super().__repr__()}'
+
+    def __rmul__(self, coefficient):
+        # We can mod by n because nG = 0
+        coef = coefficient % N
+        return super().__rmul__(coef)
+
+
+# Generator point for secp256k1 curve.
+G = S256Point(GX, GY)
