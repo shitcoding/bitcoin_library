@@ -130,4 +130,21 @@ class Point:
             return self.__class__(x, y, self.a, self.b)
 
 
-
+    def __rmul__(self, coefficient):
+        """
+        Scalar multiplication of the point using binary expansion.
+        """
+        coef = coefficient
+        # current - point that's at the current bit
+        current = self
+        # we start the result at 0, or the point at infinity
+        result = self.__class__(None, None, self.a, self.b)
+        while coef:
+            # if the rightmost bit is a 1, add the value of current bit
+            if coef & 1:
+                result += current
+            # double the point until we're past how big coef can be
+            current += current
+            # bit-shift the coef to the right
+            coef >>= 1
+        return result
