@@ -44,7 +44,7 @@ def test_finite_field_point_scalar_add():
     Testing scalar addition for elliptic curve points
     over finite field.
     """
-    test_cases = ( # scalar multiplication of points for field over 223
+    test_cases = ( # scalar addition of points for field over 223
         # (x, y), multiplier, (x_res, y_res)
         ((192, 105), 2, (49, 71)), # 2 ⋅ (192,105) == (49, 71)
         ((143, 98), 2, (64, 168)), # 2 ⋅ (143,98) == (64, 168)
@@ -66,6 +66,37 @@ def test_finite_field_point_scalar_add():
         if x_res is None: # the resulting point is the point at infinity
             p_res = Point(None, None, a, b)
         else:
-            p_res = Point(FieldElement(x_res, prime), FieldElement(y_res, prime), a, b)
+            p_res = Point(
+                FieldElement(x_res, prime), FieldElement(y_res, prime), a, b
+            )
         assert p == p_res
 
+
+def test_finite_field_point_scalar_mul():
+    """
+    Testing scalar multiplication of elliptic curve point
+    over finite field.
+    """
+    test_cases = ( # scalar multiplication of points for field over 223
+        # (x, y), multiplier, (x_res, y_res)
+        ((192, 105), 2, (49, 71)), # 2 ⋅ (192,105) == (49, 71)
+        ((143, 98), 2, (64, 168)), # 2 ⋅ (143,98) == (64, 168)
+        ((47, 71), 2, (36, 111)), # 2 ⋅ (47,71) == (36, 111)
+        ((47, 71), 4, (194, 51)), # 4 ⋅ (47,71) == (194, 51)
+        ((47, 71), 8, (116, 55)), # 8 ⋅ (47,71) == (116, 55)
+        ((47, 71), 21, (None, None)), # 21 ⋅ (47,71) == (None, None)
+    )
+    prime = 223
+    a = FieldElement(0, prime)
+    b = FieldElement(7, prime)
+    for (x, y), multiplier, (x_res, y_res) in test_cases:
+        p = Point(
+            FieldElement(x, prime), FieldElement(y, prime), a, b
+        )
+        if x_res is None: # the resulting point is the point at infinity
+            p_res = Point(None, None, a, b)
+        else:
+            p_res = Point(
+                FieldElement(x_res, prime), FieldElement(y_res, prime), a, b
+            )
+        assert multiplier * p == p_res
