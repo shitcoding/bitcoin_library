@@ -174,6 +174,34 @@ class S256Point(Point):
         coef = coefficient % N
         return super().__rmul__(coef)
 
+    def verify(self, z, sig):
+        """
+        Verify secp256k1 signature.
+
+        args:
+            z: signature hash
+            sig: signature
+
+        returns:
+            True: signature is valid
+            False: signature is invalid
+        """
+        s_inv = pow(sig.s, N - 2, N)
+        u = z * s_inv % N
+        v = sig.r * s_inv % N
+        total = u * G + v * self
+        return total.x.num == sig.r
+
 
 # Generator point for secp256k1 curve.
 G = S256Point(GX, GY)
+
+
+class Signature:
+    """secp256k1 curve signature."""
+    def __init__(self, r, s):
+        self.r = r
+        self.s = s
+
+    def __repr__(self):
+        return 'Signature({:x},{:x})'.format(self.r, self.s)
