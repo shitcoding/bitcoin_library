@@ -1,9 +1,14 @@
 import pytest
-from py_bitcoin.ecc import A, B, G, N, S256Field, S256Point, Signature
+from random import randint
+
+from py_bitcoin.ecc import A, B, G, N, S256Field, S256Point, Signature, PrivateKey
 
 
 def test_signature_verification():
-    """Test ECDSA secp256k1 signature verification."""
+    """
+    Test ECDSA secp256k1 signature verification.
+    """
+    # Test verification with predefined private key and signature.
     point = S256Point(
         0x887387e452b8eacc4acfde10d9aaf7f6d9a0f975aabb10d006e4da568744d06c,
         0x61de6d95231cd89026e286df3b6ae4a894a3378e393e93a0f45b666329a0ae34
@@ -21,3 +26,9 @@ def test_signature_verification():
 
     assert point.verify(z1, signature1)
     assert point.verify(z2, signature2)
+
+    # Test verification with random signature hash and private key
+    pk = PrivateKey(randint(0, N))
+    z = randint(0, 2**256)
+    sig = pk.sign(z)
+    assert pk.point.verify(z, sig)
