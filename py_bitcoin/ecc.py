@@ -158,6 +158,9 @@ class S256Field(FieldElement):
     def __repr__(self):
         return '{:x}'.format(self.num).zfill(64)
 
+    def sqrt(self):
+        return self**((P + 1) / 4)
+
 
 class S256Point(Point):
     """A point on secp256k1 elliptic curve."""
