@@ -203,7 +203,7 @@ class S256Point(Point):
         return total.x.num == sig.r
 
     def sec(self, compressed=True):
-        """Returns the binary version of SEC format."""
+        """Serialize S256Point in binary version of SEC format."""
         # Compressed SEC format
         if compressed:
             if self.y.num % 2 == 0:
