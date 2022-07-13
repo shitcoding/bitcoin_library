@@ -51,3 +51,8 @@ def hash160(s):
 def little_endian_to_int(binary):
     """Return integer from given little-endian byte sequence."""
     return int.from_bytes(binary, 'little')
+
+
+def int_to_little_endian(num, length):
+    """Return little-endian byte sequence from given integer."""
+    return num.to_bytes(length, 'little')
