@@ -255,7 +255,7 @@ class Signature:
         return 'Signature({:x},{:x})'.format(self.r, self.s)
 
     def der(self):
-        """Return serialized signature in DER format."""
+        """Serialize Signature object in binary DER format."""
         rbin = self.r.to_bytes(32, byteorder='big')
         # remove all null bytes at the beginning
         rbin = rbin.lstrip(b'\x00')
