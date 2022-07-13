@@ -47,3 +47,7 @@ def hash160(s):
     """sha256 followed by ripemd160."""
     return hashlib.new('ripemd160', hashlib.sha256(s).digest()).digest()
 
+
+def little_endian_to_int(binary):
+    """Return integer from given little-endian byte sequence."""
+    return int.from_bytes(binary, 'little')
