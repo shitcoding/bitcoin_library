@@ -2,6 +2,8 @@ from io import BytesIO
 import hashlib
 import hmac
 
+from py_bitcoin.utils import encode_base58_checksum, hash160
+
 
 class FieldElement:
     """Finite field element."""
@@ -238,6 +240,22 @@ class S256Point(Point):
             return S256Point(x, even_beta)
         else:
             return S256Point(x, odd_beta)
+
+    def hash160(self, compressed=True):
+        """
+        Return the result of sha256 followed by ripemd160 on
+        binary SEC format serialization of given S256Point.
+        """
+        return hash160(self.sec(compressed))
+
+    def address(self, compressed=True, testnet=False):
+        """Return the bitcoin address string for a given S256Point."""
+        h160 = self.hash160(compressed)
+        if testnet:
+            prefix = b'\x6f'
+        else:
+            prefix = b'\x00'
+        return encode_base58_checksum(prefix + h160)
 
 
 
