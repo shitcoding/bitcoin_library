@@ -42,3 +42,8 @@ def encode_base58_checksum(b):
     """Encode to BASE58 with a checksum."""
     return encode_base58(b + hash256(b)[:4])
 
+
+def hash160(s):
+    """sha256 followed by ripemd160."""
+    return hashlib.new('ripemd160', hashlib.sha256(s).digest()).digest()
+
