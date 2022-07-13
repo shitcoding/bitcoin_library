@@ -386,3 +386,16 @@ class PrivateKey:
         if s > N / 2:
             s = N - s
         return Signature(r, s)
+
+    def wif(self, compressed=True, testnet=False):
+        """Return PrivateKey serialization in WIF format."""
+        secret_bytes = self.secret.to_bytes(32, 'big')
+        if testnet:
+            prefix = b'\xef'
+        else:
+            prefix = b'\x80'
+        if compressed:
+            suffix = b'\x01'
+        else:
+            suffix = b''
+        return encode_base58_checksum(prefix + secret_bytes + suffix)
