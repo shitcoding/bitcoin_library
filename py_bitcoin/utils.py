@@ -10,7 +10,15 @@ def hash256(s):
 
 
 def encode_base58(s):
-    """Encodes public key to BASE58 format."""
+    """
+    Encodes public key to BASE58 format.
+
+    args:
+        s: public key in binary format.
+
+    returns:
+        private key in encode in BASE58 format.
+    """
     count = 0
     # looping to determine how many bytes at the front are 0 bytes
     # to add them back at the end
