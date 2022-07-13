@@ -8,7 +8,7 @@ def test_signature_verification():
     """
     Test ECDSA secp256k1 signature verification.
     """
-    # Test verification with predefined private key and signature.
+    # Test signature verification with predefined private key and signature.
     point = S256Point(
         0x887387e452b8eacc4acfde10d9aaf7f6d9a0f975aabb10d006e4da568744d06c,
         0x61de6d95231cd89026e286df3b6ae4a894a3378e393e93a0f45b666329a0ae34
@@ -27,8 +27,38 @@ def test_signature_verification():
     assert point.verify(z1, signature1)
     assert point.verify(z2, signature2)
 
-    # Test verification with random signature hash and private key
+    # Test signature verification with random signature hash and
+    # random private key
     pk = PrivateKey(randint(0, N))
     z = randint(0, 2**256)
     sig = pk.sign(z)
     assert pk.point.verify(z, sig)
+
+
+def test_s256point_serialization_to_sec():
+    """
+    Testing S256Point serialization to uncompressed and
+    compressed binary SEC format.
+    """
+    test_cases = (
+        (
+            999**3,
+            '049d5ca49670cbe4c3bfa84c96a8c87df086c6ea6a24ba6b809c9de234496808d56fa15cc7f3d38cda98dee2419f415b7513dde1301f8643cd9245aea7f3f911f9',
+            '039d5ca49670cbe4c3bfa84c96a8c87df086c6ea6a24ba6b809c9de234496808d5',
+        ),
+        (
+            123,
+            '04a598a8030da6d86c6bc7f2f5144ea549d28211ea58faa70ebf4c1e665c1fe9b5204b5d6f84822c307e4b4a7140737aec23fc63b65b35f86a10026dbd2d864e6b',
+            '03a598a8030da6d86c6bc7f2f5144ea549d28211ea58faa70ebf4c1e665c1fe9b5',
+        ),
+        (
+            42424242,
+            '04aee2e7d843f7430097859e2bc603abcc3274ff8169c1a469fee0f20614066f8e21ec53f40efac47ac1c5211b2123527e0e9b57ede790c4da1e72c91fb7da54a3',
+            '03aee2e7d843f7430097859e2bc603abcc3274ff8169c1a469fee0f20614066f8e',
+        ),
+    )
+    for (coef, uncompressed_sec, compressed_sec) in test_cases:
+        point = coef * G
+        assert point.sec(compressed=False) == bytes.fromhex(uncompressed_sec)
+        assert point.sec(compressed=True) == bytes.fromhex(compressed_sec)
+
