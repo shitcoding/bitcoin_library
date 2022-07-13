@@ -36,3 +36,9 @@ def encode_base58(s):
         result = BASE58_ALPHABET[mod] + result
     # prepend the zeros that we counted at the front
     return prefix + result
+
+
+def encode_base58_checksum(b):
+    """Encode to BASE58 with a checksum."""
+    return encode_base58(b + hash256(b)[:4])
+
