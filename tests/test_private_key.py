@@ -76,3 +76,17 @@ def test_sec_serialization_parsing_to_s256point():
         assert point == S256Point.parse(bytes.fromhex(compressed_sec))
 
 
+def test_signature_serialization_to_der():
+    """Testing signature serialization to DER format."""
+    testcases = (
+        (1, 2),
+        (randint(0, 2**256), randint(0, 2**255)),
+        (randint(0, 2**256), randint(0, 2**255)),
+    )
+    for r, s in testcases:
+        sig = Signature(r, s)
+        der = sig.der()
+        sig2 = Signature.parse(der)
+        assert sig2.r == r
+        assert sig2.s ==  s
+
