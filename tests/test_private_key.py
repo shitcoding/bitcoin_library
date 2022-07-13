@@ -64,3 +64,15 @@ def test_s256point_serialization_to_sec():
         assert point.sec(compressed=False) == bytes.fromhex(uncompressed_sec)
         assert point.sec(compressed=True) == bytes.fromhex(compressed_sec)
 
+
+def test_sec_serialization_parsing_to_s256point():
+    """
+    Testing parsing binary serialized signature to
+    S256Point object.
+    """
+    for (coef, uncompressed_sec, compressed_sec) in SEC_TEST_CASES:
+        point = coef * G
+        assert point ==  S256Point.parse(bytes.fromhex(uncompressed_sec))
+        assert point == S256Point.parse(bytes.fromhex(compressed_sec))
+
+
