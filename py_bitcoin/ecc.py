@@ -159,7 +159,7 @@ class S256Field(FieldElement):
         return '{:x}'.format(self.num).zfill(64)
 
     def sqrt(self):
-        return self**((P + 1) / 4)
+        return self**((P + 1) // 4)
 
 
 class S256Point(Point):
@@ -216,7 +216,7 @@ class S256Point(Point):
 
     @classmethod
     def parse(self, sec_bin):
-        """Returns a S256Point object from a SEC binary (not hex)."""
+        """Returns a S256Point object parsed from SEC binary (not hex)."""
         if sec_bin[0] == 4:
             x = int.from_bytes(sec_bin[1:33], 'big')
             y = int.from_bytes(sec_bin[33:65], 'big')
