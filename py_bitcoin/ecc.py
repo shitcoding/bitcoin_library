@@ -52,7 +52,9 @@ class FieldElement:
     def __truediv__(self, other):
         if self.prime != other.prime:
             raise TypeError('Cannot divide two numbers in different Fields')
-        num = (self.num * pow(other.num, self.prime-2, self.prime)) % self.prime
+        num = (
+            self.num * pow(other.num, self.prime-2, self.prime)
+        ) % self.prime
         return self.__class__(num, self.prime)
 
     def __rmul__(self, coefficient):
@@ -94,7 +96,9 @@ class Point:
     def __add__(self, other):
         '''Add 2 points on elliptic curve, return resulting Point object.'''
         if self.a != other.a or self.b != other.b:
-            raise TypeError(f'Points {self}, {other} are not on the same curve')
+            raise TypeError(
+                f'Points {self}, {other} are not on the same curve'
+            )
 
         if self.x is None:  # self is the point at infinity, return other
             return other
@@ -258,7 +262,6 @@ class S256Point(Point):
         return encode_base58_checksum(prefix + h160)
 
 
-
 # Generator point for secp256k1 curve.
 G = S256Point(GX, GY)
 
@@ -322,7 +325,6 @@ class Signature:
         if len(signature_bin) != 6 + rlength + slength:
             raise SyntaxError("Signature too long")
         return cls(r, s)
-
 
 
 class PrivateKey:
