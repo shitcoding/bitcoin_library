@@ -331,8 +331,12 @@ class PrivateKey:
     """
     def __init__(self, secret):
         """
-        secret: secret used for private key generation
-        point: public key
+        Initialize PrivateKey object.
+
+        secret:
+            secret used for private key generation
+        point:
+            public key
         """
         self.secret = secret
         self.point = secret * G
