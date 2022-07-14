@@ -1,3 +1,4 @@
+from script import Script
 from py_bitcoin.utils import (
     hash256,
     little_endian_to_int,
@@ -34,3 +35,26 @@ class Tx:
     def id(self):
         """Return human-readable hexadecimal of the transaction hash."""
         return self.hash().hex()
+
+
+class TxIn:
+    """Class representing a Bitcoin transaction input."""
+    def __init__(
+            self, prev_tx, prev_index, script_sig=None, sequence=0xffffffff
+    ):
+        self.prev_tx = prev_tx
+        self.prev_index = prev_index
+        # we default to empty ScriptSig
+        if script_sig is None:
+            self.script_sig = Script()
+        else:
+            self.script_sig = script_sig
+        self.sequence = sequence
+
+    def __repr__(self):
+        """Return string representation of transaction input."""
+        return '{}:{}'.format(
+            self.prev_tx.hex(),
+            self.prev_index,
+        )
+
