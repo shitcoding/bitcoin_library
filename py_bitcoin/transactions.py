@@ -58,3 +58,18 @@ class TxIn:
             self.prev_index,
         )
 
+    @classmethod
+    def parse(cls, stream):
+        """
+        Parses transaction input from a byte stream.
+        Returns TxIn object.
+        """
+        # parsing previous transaction ID
+        prev_tx = stream.read(32)[::-1]
+        # parsing previous transaction index
+        prev_index = little_endian_to_int(stream.read(4))
+        # parsing ScriptSig from the stream
+        script_sig = Script.parse(stream)
+        # parsing sequence of the input
+        sequence = little_endian_to_int(stream.read(4))
+        return cls(prev_tx, prev_index, script_sig, sequence)
